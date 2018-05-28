@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 public class BlogQueryProcessor {
     private IndexSearcher isearcher;
     private final String FIELD_SEARCH = "contents";
+    private final int RESULT_NUM = 3;
 
     public BlogQueryProcessor(String indexPath) {
         try {
@@ -63,7 +64,7 @@ public class BlogQueryProcessor {
 
         Query query = builder.build();
 
-        ScoreDoc[] hits = isearcher.search(query, 5).scoreDocs;
+        ScoreDoc[] hits = isearcher.search(query, RESULT_NUM).scoreDocs;
         // Iterate through the results:
         List<ResultDocument> docs = new ArrayList<>();
         for (ScoreDoc hit : hits) {
