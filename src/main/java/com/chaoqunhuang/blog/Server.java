@@ -1,32 +1,35 @@
 package com.chaoqunhuang.blog;
 
-import java.util.List;
+
+import com.chaoqunhuang.blog.processor.BlogQueryProcessor;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
-import org.apache.lucene.document.Document;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Log4j2
 public class Server extends AbstractVerticle {
+
     @Override
     public void start() {
+        log.info("Server Starts");
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(System.in));
         System.out.println("Enter the path where the index is: (e.g. /tmp/index)");
-
         String indexPath;
-
-        HttpServer server = vertx.createHttpServer();
-
         try {
             indexPath = br.readLine();
+            log.info(String.format("Index Path is:%s", indexPath));
         } catch (IOException e) {
             System.out.println("Cannot open index file");
             throw new RuntimeException(e);
         }
+
+        HttpServer server = vertx.createHttpServer();
 
         BlogQueryProcessor blogQueryProcessor = new BlogQueryProcessor(indexPath);
 
@@ -36,18 +39,11 @@ public class Server extends AbstractVerticle {
             final String keyWord = request.getParam("keyword");
 
             if (keyWord != null) {
-                System.out.println("Searching word:" + keyWord);
-                StringBuilder sb = new StringBuilder();
+                log.info("Searching word:" + keyWord);
+                String sb = null;
 
                 try {
-                    List<Document> hits = blogQueryProcessor.search(keyWord);
-                    sb.append("{\"hits\":[");
-                    hits.forEach(hit ->
-                            sb.append("\"").append(hit.getField("filename").stringValue()).append("\","));
-                    if (hits.size() != 0) {
-                        sb.deleteCharAt(sb.length() - 1);
-                    }
-                    sb.append("]}");
+                    sb = blogQueryProcessor.search(keyWord);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -56,7 +52,7 @@ public class Server extends AbstractVerticle {
 
 
                 // Write to the response and end it
-                response.end(sb.toString());
+                response.end(sb);
             }
         });
         server.listen(9090);

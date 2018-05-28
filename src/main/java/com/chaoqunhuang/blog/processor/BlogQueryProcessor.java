@@ -1,5 +1,9 @@
-package com.chaoqunhuang.blog;
+package com.chaoqunhuang.blog.processor;
 
+import com.chaoqunhuang.blog.converter.ResultDocumentSerializer;
+import com.chaoqunhuang.blog.converter.SnippetGenerator;
+import com.chaoqunhuang.blog.model.ResultDocument;
+import lombok.extern.log4j.Log4j2;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Term;
@@ -18,6 +22,7 @@ import java.util.List;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+@Log4j2
 public class BlogQueryProcessor {
     private IndexSearcher isearcher;
     private final String FIELD_SEARCH = "contents";
@@ -33,7 +38,11 @@ public class BlogQueryProcessor {
         }
     }
 
-    public List<Document> search(String queryText) throws IOException {
+    public String search(String queryText) throws IOException {
+        return ResultDocumentSerializer.serializeResultDocument(booleanQuery(queryText));
+    }
+
+    private List<ResultDocument> booleanQuery(String queryText) throws IOException {
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
 
         for (String term : queryText.toLowerCase().split("\\s")) {
@@ -44,11 +53,15 @@ public class BlogQueryProcessor {
 
         ScoreDoc[] hits = isearcher.search(query, 5).scoreDocs;
         // Iterate through the results:
-        List<Document> docs = new ArrayList<>();
+        List<ResultDocument> docs = new ArrayList<>();
         for (ScoreDoc hit : hits) {
             Document hitDoc = isearcher.doc(hit.doc);
-            docs.add(hitDoc);
+            docs.add(new ResultDocument(hitDoc.getField("filename").stringValue(),
+                    hit.score,
+                    SnippetGenerator.generateSnippet(hitDoc, queryText)));
         }
+
+        log.info("HitDocs:" + docs.toString());
         return docs;
     }
 
