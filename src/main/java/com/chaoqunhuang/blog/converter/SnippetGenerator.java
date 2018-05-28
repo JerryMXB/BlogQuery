@@ -16,12 +16,12 @@ public class SnippetGenerator {
         String contents = doc.getField("contents").stringValue();
         String lowerCaseContents = contents.toLowerCase();
         String firstKeyWord = keyWord.split("\\s")[0];
-        int firstKeyWordIndex = lowerCaseContents.indexOf(firstKeyWord);
+        int firstKeyWordIndex = lowerCaseContents.indexOf(firstKeyWord.toLowerCase());
         sb.append(contents.substring(
                 firstKeyWordIndex - 50 > 0 ? firstKeyWordIndex - 50 : 0,
                 firstKeyWordIndex
         ));
-        sb.append("<b>").append(keyWord).append("</b>");
+        sb.append("<b>").append(firstKeyWord).append("</b>");
         sb.append(contents.substring(
                 firstKeyWordIndex + firstKeyWord.length(),
                 firstKeyWordIndex + 50 < contents.length() ? firstKeyWordIndex + 50 : contents.length() - 1

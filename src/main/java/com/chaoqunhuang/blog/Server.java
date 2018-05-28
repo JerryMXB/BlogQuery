@@ -45,7 +45,7 @@ public class Server extends AbstractVerticle {
                 try {
                     sb = blogQueryProcessor.search(keyWord);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.info(e.getMessage() + e.getCause());
                 }
                 response.putHeader("content-type", "text/plain");
                 response.putHeader("Access-Control-Allow-Origin", "*");
