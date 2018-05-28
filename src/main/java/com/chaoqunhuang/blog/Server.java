@@ -10,6 +10,8 @@ import lombok.extern.log4j.Log4j2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @Log4j2
 public class Server extends AbstractVerticle {
@@ -45,11 +47,14 @@ public class Server extends AbstractVerticle {
                 try {
                     sb = blogQueryProcessor.search(keyWord);
                 } catch (Exception e) {
-                    log.info(e.getMessage() + e.getCause());
+                    // Logging the exception stack trace
+                    StringWriter outError = new StringWriter();
+                    e.printStackTrace(new PrintWriter(outError));
+                    String errorString = outError.toString();
+                    log.info(errorString);
                 }
                 response.putHeader("content-type", "text/plain");
                 response.putHeader("Access-Control-Allow-Origin", "*");
-
 
                 // Write to the response and end it
                 response.end(sb);

@@ -10,9 +10,15 @@ import java.io.IOException;
 
 @Log4j2
 public class ResultDocumentSerializer {
-    public static String serializeResultDocument(List<ResultDocument> resultDocument) throws IOException {
+    /**
+     * Serialize the list of result documents to json message
+     * @param resultDocuments List of result documents to serialize
+     * @return the serialzed json message
+     * @throws IOException An IOException will be thrown if it fails to convert the json message
+     */
+    public static String serializeResultDocument(List<ResultDocument> resultDocuments) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        String res = objectMapper.writeValueAsString(resultDocument);
+        String res = objectMapper.writeValueAsString(resultDocuments);
         log.info("Serialized Json Message:" + res);
         return res;
     }

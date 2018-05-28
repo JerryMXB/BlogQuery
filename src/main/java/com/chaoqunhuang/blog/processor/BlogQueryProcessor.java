@@ -38,10 +38,22 @@ public class BlogQueryProcessor {
         }
     }
 
+    /**
+     * Search the results given a query
+     * @param queryText A string query
+     * @return The json results which are serialized from the list of result documents
+     * @throws IOException An IOException will be thrown if it fails to create such json message
+     */
     public String search(String queryText) throws IOException {
         return ResultDocumentSerializer.serializeResultDocument(booleanQuery(queryText));
     }
 
+    /**
+     * Boolean Query search @see <a href="https://docs.oracle.com/cd/E26180_01/Search.94/ATGSearchQueryRef/html/s0202booleanqueries01.html">Boolean Query</a>
+     * @param queryText A string query
+     * @return The list of result documents
+     * @throws IOException
+     */
     private List<ResultDocument> booleanQuery(String queryText) throws IOException {
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
 

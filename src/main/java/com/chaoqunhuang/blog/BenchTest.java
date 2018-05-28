@@ -2,15 +2,13 @@ package com.chaoqunhuang.blog;
 
 import com.chaoqunhuang.blog.processor.BlogQueryProcessor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.lucene.document.Document;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 @Log4j2
-public class Main {
-
+public class BenchTest {
     public static void main(String args[]) throws IOException{
         log.info("Server Starts");
         BufferedReader br = new BufferedReader(

@@ -5,6 +5,8 @@ import org.apache.lucene.document.Document;
 
 @Log4j2
 public class SnippetGenerator {
+    private static final int SNIPPET_LENGTH = 50;
+
     /**
      * Generate Snippets for the key word
      * @param doc Hit Document
@@ -18,13 +20,13 @@ public class SnippetGenerator {
         String firstKeyWord = keyWord.split("\\s")[0];
         int firstKeyWordIndex = lowerCaseContents.indexOf(firstKeyWord.toLowerCase());
         sb.append(contents.substring(
-                firstKeyWordIndex - 50 > 0 ? firstKeyWordIndex - 50 : 0,
+                firstKeyWordIndex - SNIPPET_LENGTH > 0 ? firstKeyWordIndex - SNIPPET_LENGTH : 0,
                 firstKeyWordIndex
         ));
         sb.append("<b>").append(firstKeyWord).append("</b>");
         sb.append(contents.substring(
                 firstKeyWordIndex + firstKeyWord.length(),
-                firstKeyWordIndex + 50 < contents.length() ? firstKeyWordIndex + 50 : contents.length() - 1
+                firstKeyWordIndex + SNIPPET_LENGTH < contents.length() ? firstKeyWordIndex + SNIPPET_LENGTH : contents.length() - 1
         ));
         return sb.toString();
     }
